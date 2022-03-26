@@ -9,8 +9,12 @@ class LyricsRenderer extends StatefulWidget {
   final bool showChord;
   final Function onTapChord;
 
-  /// To help stop overflow, this should be the sum of left & right padding
+  /// This parameter is no longer required as it is calculated automatically
   final int widgetPadding;
+
+  ///The width of the container
+  ///Normally calculated automatically but can be overridden
+  final double widgetWidth;
 
   /// Transpose Increment for the Chords,
   /// default value is 0, which means no transpose is applied
@@ -40,6 +44,7 @@ class LyricsRenderer extends StatefulWidget {
     required this.onTapChord,
     this.showChord = true,
     this.widgetPadding = 0,
+    this.widgetWidth = 0,
     this.transposeIncrement = 0,
     this.scrollSpeed = 0,
     this.lineHeight = 8.0,
@@ -57,70 +62,78 @@ class _LyricsRendererState extends State<LyricsRenderer> {
 
   @override
   Widget build(BuildContext context) {
-    ChordProcessor _chordProcessor = ChordProcessor(context);
-    final chordLyricsDocument = _chordProcessor.processText(
-      text: widget.lyrics,
-      lyricsStyle: widget.textStyle,
-      chordStyle: widget.chordStyle,
-      widgetPadding: widget.widgetPadding,
-      transposeIncrement: widget.transposeIncrement,
-    );
-    if (chordLyricsDocument.chordLyricsLines.isEmpty) return Container();
-    return SingleChildScrollView(
-      controller: _controller,
-      child: Column(
-        crossAxisAlignment: widget.horizontalAlignment,
-        children: [
-          if (widget.leadingWidget != null) widget.leadingWidget!,
-          ListView.separated(
-            shrinkWrap: true,
-            scrollDirection: Axis.vertical,
-            physics: const NeverScrollableScrollPhysics(),
-            separatorBuilder: (context, index) => SizedBox(
-              height: widget.lineHeight,
-            ),
-            itemBuilder: (context, index) {
-              final line = chordLyricsDocument.chordLyricsLines[index];
-              return Column(
-                crossAxisAlignment: CrossAxisAlignment.start,
-                children: [
-                  if (widget.showChord)
-                    Row(
-                      children: line.chords
-                          .map((chord) => Row(
-                                children: [
-                                  SizedBox(
-                                    width: chord.leadingSpace,
-                                  ),
-                                  GestureDetector(
-                                    onTap: () =>
-                                        widget.onTapChord(chord.chordText),
-                                    child: RichText(
-                                      text: TextSpan(
-                                        text: chord.chordText,
-                                        style: widget.chordStyle,
-                                      ),
+    return LayoutBuilder(
+        builder: (BuildContext context, BoxConstraints constraints) {
+      ChordProcessor _chordProcessor = ChordProcessor(context);
+
+      if (widget.widgetPadding != 0)
+        print(
+            'The widgetPadding parameter is deprecated and is no longer used.');
+
+      final chordLyricsDocument = _chordProcessor.processText(
+        text: widget.lyrics,
+        lyricsStyle: widget.textStyle,
+        chordStyle: widget.chordStyle,
+        widgetWidth: constraints.maxWidth,
+        transposeIncrement: widget.transposeIncrement,
+      );
+      if (chordLyricsDocument.chordLyricsLines.isEmpty) return Container();
+      return SingleChildScrollView(
+        controller: _controller,
+        child: Column(
+          crossAxisAlignment: widget.horizontalAlignment,
+          children: [
+            if (widget.leadingWidget != null) widget.leadingWidget!,
+            ListView.separated(
+              shrinkWrap: true,
+              scrollDirection: Axis.vertical,
+              physics: const NeverScrollableScrollPhysics(),
+              separatorBuilder: (context, index) => SizedBox(
+                height: widget.lineHeight,
+              ),
+              itemBuilder: (context, index) {
+                final line = chordLyricsDocument.chordLyricsLines[index];
+                return Column(
+                  crossAxisAlignment: CrossAxisAlignment.start,
+                  children: [
+                    if (widget.showChord)
+                      Row(
+                        children: line.chords
+                            .map((chord) => Row(
+                                  children: [
+                                    SizedBox(
+                                      width: chord.leadingSpace,
                                     ),
-                                  )
-                                ],
-                              ))
-                          .toList(),
-                    ),
-                  RichText(
-                    text: TextSpan(
-                      text: line.lyrics,
-                      style: widget.textStyle,
-                    ),
-                  )
-                ],
-              );
-            },
-            itemCount: chordLyricsDocument.chordLyricsLines.length,
-          ),
-          if (widget.trailingWidget != null) widget.trailingWidget!,
-        ],
-      ),
-    );
+                                    GestureDetector(
+                                      onTap: () =>
+                                          widget.onTapChord(chord.chordText),
+                                      child: RichText(
+                                        text: TextSpan(
+                                          text: chord.chordText,
+                                          style: widget.chordStyle,
+                                        ),
+                                      ),
+                                    )
+                                  ],
+                                ))
+                            .toList(),
+                      ),
+                    RichText(
+                      text: TextSpan(
+                        text: line.lyrics,
+                        style: widget.textStyle,
+                      ),
+                    )
+                  ],
+                );
+              },
+              itemCount: chordLyricsDocument.chordLyricsLines.length,
+            ),
+            if (widget.trailingWidget != null) widget.trailingWidget!,
+          ],
+        ),
+      );
+    });
   }
 
   @override
