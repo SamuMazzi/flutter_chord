@@ -13,7 +13,7 @@ class ChordProcessor {
     required String text,
     required TextStyle lyricsStyle,
     required chordStyle,
-    required double widgetWidth,
+    double widgetWidth = 0,
     int transposeIncrement = 0,
   }) {
     List<ChordLyricsLine> _chordLyricsLines = [];
