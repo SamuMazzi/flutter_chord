@@ -69,12 +69,14 @@ class _LyricsRendererState extends State<LyricsRenderer> {
       if (widget.widgetPadding != 0)
         print(
             'The widgetPadding parameter is deprecated and is no longer used.');
+          
+      double widgetWidth = (widget.widgetWidth == 0) ? constraints.maxWidth : widget.widgetWidth;
 
       final chordLyricsDocument = _chordProcessor.processText(
         text: widget.lyrics,
         lyricsStyle: widget.textStyle,
         chordStyle: widget.chordStyle,
-        widgetWidth: constraints.maxWidth,
+        widgetWidth: widgetWidth,
         transposeIncrement: widget.transposeIncrement,
       );
       if (chordLyricsDocument.chordLyricsLines.isEmpty) return Container();
