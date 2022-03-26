@@ -12,8 +12,7 @@ class LyricsRenderer extends StatefulWidget {
   /// This parameter is no longer required as it is calculated automatically
   final int widgetPadding;
 
-  ///The width of the container
-  ///Normally calculated automatically but can be overridden
+  ///To override the width of the container
   final double widgetWidth;
 
   /// Transpose Increment for the Chords,
@@ -69,8 +68,9 @@ class _LyricsRendererState extends State<LyricsRenderer> {
       if (widget.widgetPadding != 0)
         print(
             'The widgetPadding parameter is deprecated and is no longer used.');
-          
-      double widgetWidth = (widget.widgetWidth == 0) ? constraints.maxWidth : widget.widgetWidth;
+
+      double widgetWidth =
+          (widget.widgetWidth == 0) ? constraints.maxWidth : widget.widgetWidth;
 
       final chordLyricsDocument = _chordProcessor.processText(
         text: widget.lyrics,
