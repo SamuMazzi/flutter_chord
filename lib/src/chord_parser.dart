@@ -216,7 +216,8 @@ class ChordProcessor {
     }
 
     //Now at the end of the text. Save the buffer as a line.
-    _chordLyricsLine.lyrics += _chordLyricsBuffer.lyrics;
+    _chordLyricsLine.lyrics += _chordLyricsBuffer.lyrics;    
+    _chordLyricsLine.chords.addAll(_chordLyricsBuffer.chords);
     _chordLyricsLines.add(_chordLyricsLine);
 
     return ChordLyricsDocument(_chordLyricsLines);
