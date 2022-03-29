@@ -15,7 +15,7 @@ void main() {
             text: text,
             lyricsStyle: textStyle,
             chordStyle: textStyle,
-            widgetWidth: 350,
+            widgetWidth: 775,
           );
 
           expect(
@@ -67,7 +67,7 @@ void main() {
             text: text,
             lyricsStyle: textStyle,
             chordStyle: textStyle,
-            widgetWidth: 350,
+            widgetWidth: 775,
           );
 
           expect(
@@ -120,7 +120,7 @@ void main() {
             text: text,
             lyricsStyle: textStyle,
             chordStyle: textStyle,
-            widgetWidth: 350,
+            widgetWidth: 775,
           );
 
           expect(
